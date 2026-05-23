@@ -1,8 +1,9 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "steresa-email-worker",
+  "name": "santa-teresa-producciones-pagina-web",
   "main": "src/index.ts",
   "compatibility_date": "2025-02-04",
+  "compatibility_flags": ["nodejs_compat"],
 
   // Email routing binding — allows sending outbound emails
   "send_email": [
