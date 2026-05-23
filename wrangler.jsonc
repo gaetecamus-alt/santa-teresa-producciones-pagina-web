@@ -5,6 +5,12 @@
   "compatibility_date": "2025-02-04",
   "compatibility_flags": ["nodejs_compat"],
 
+  // Serve static files (index.html, img/, etc.) from the root directory
+  "assets": {
+    "directory": ".",
+    "binding": "ASSETS"
+  },
+
   // Email routing binding — allows sending outbound emails
   "send_email": [
     {

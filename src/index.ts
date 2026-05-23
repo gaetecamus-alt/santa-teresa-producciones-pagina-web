@@ -2,10 +2,10 @@ import { EmailMessage } from "cloudflare:email";
 
 interface Env {
   SEND_EMAIL: SendEmail;
+  ASSETS: Fetcher;
 }
 
 function buildRawEmail(from: string, to: string, subject: string, body: string): string {
-  const boundary = `----=_boundary_${Date.now()}`;
   return [
     `From: Santa Teresa Producciones <${from}>`,
     `To: ${to}`,
@@ -25,71 +25,78 @@ export default {
     await message.forward("contacto@steresa.cl");
   },
 
-  // Handle HTTP requests (contact form submissions)
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
-    const corsHeaders = {
-      "Access-Control-Allow-Origin": "https://steresa.cl",
-      "Access-Control-Allow-Methods": "POST, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type",
-    };
+    const url = new URL(request.url);
 
-    if (request.method === "OPTIONS") {
-      return new Response(null, { headers: corsHeaders });
-    }
+    // Only intercept POST /api/contact — everything else served as static asset
+    if (url.pathname === "/api/contact") {
+      const corsHeaders = {
+        "Access-Control-Allow-Origin": "https://steresa.cl",
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type",
+      };
 
-    if (request.method !== "POST") {
-      return new Response("Method not allowed", { status: 405 });
-    }
-
-    try {
-      const body = await request.json<{
-        nombre: string;
-        email: string;
-        empresa?: string;
-        tipo?: string;
-        detalle: string;
-      }>();
-
-      const { nombre, email, empresa, tipo, detalle } = body;
-
-      if (!nombre || !email || !detalle) {
-        return Response.json(
-          { success: false, message: "Campos requeridos faltantes" },
-          { status: 400, headers: corsHeaders }
-        );
+      if (request.method === "OPTIONS") {
+        return new Response(null, { headers: corsHeaders });
       }
 
-      console.log(`Contact form submission from=${email} nombre=${nombre}`);
+      if (request.method !== "POST") {
+        return new Response("Method not allowed", { status: 405, headers: corsHeaders });
+      }
 
-      const bodyText = [
-        `Nombre: ${nombre}`,
-        `Email: ${email}`,
-        empresa ? `Empresa: ${empresa}` : null,
-        tipo ? `Tipo de evento: ${tipo}` : null,
-        ``,
-        `Detalle:`,
-        detalle,
-      ]
-        .filter(Boolean)
-        .join("\n");
+      try {
+        const body = await request.json<{
+          nombre: string;
+          email: string;
+          empresa?: string;
+          tipo?: string;
+          detalle: string;
+        }>();
 
-      const raw = buildRawEmail(
-        "noreply@steresa.cl",
-        "contacto@steresa.cl",
-        `Nueva cotización de ${nombre}`,
-        bodyText
-      );
+        const { nombre, email, empresa, tipo, detalle } = body;
 
-      const emailMessage = new EmailMessage("noreply@steresa.cl", "contacto@steresa.cl", raw);
-      await env.SEND_EMAIL.send(emailMessage);
+        if (!nombre || !email || !detalle) {
+          return Response.json(
+            { success: false, message: "Campos requeridos faltantes" },
+            { status: 400, headers: corsHeaders }
+          );
+        }
 
-      return Response.json({ success: true }, { headers: corsHeaders });
-    } catch (err) {
-      console.error("Error sending email:", err);
-      return Response.json(
-        { success: false, message: "Error interno" },
-        { status: 500, headers: corsHeaders }
-      );
+        console.log(`Contact form from=${email} nombre=${nombre}`);
+
+        const bodyText = [
+          `Nombre: ${nombre}`,
+          `Email: ${email}`,
+          empresa ? `Empresa: ${empresa}` : null,
+          tipo ? `Tipo de evento: ${tipo}` : null,
+          ``,
+          `Detalle:`,
+          detalle,
+        ]
+          .filter(Boolean)
+          .join("\n");
+
+        const raw = buildRawEmail(
+          "noreply@steresa.cl",
+          "contacto@steresa.cl",
+          `Nueva cotización de ${nombre}`,
+          bodyText
+        );
+
+        const emailMessage = new EmailMessage("noreply@steresa.cl", "contacto@steresa.cl", raw);
+        await env.SEND_EMAIL.send(emailMessage);
+
+        return Response.json({ success: true }, { headers: corsHeaders });
+      } catch (err) {
+        console.error("Error sending email:", err);
+        return Response.json(
+          { success: false, message: "Error interno" },
+          { status: 500, headers: corsHeaders }
+        );
+      }
     }
+
+    // All other requests → serve static assets (index.html, img/, etc.)
+    return env.ASSETS.fetch(request);
   },
 };
