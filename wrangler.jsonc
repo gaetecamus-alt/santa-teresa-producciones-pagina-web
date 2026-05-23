@@ -1,14 +1,32 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "santa-teresa-producciones-pagina-web",
-  "compatibility_date": "2026-05-23",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-02-04",
+  "compatibility_flags": ["nodejs_compat"],
+
+  // Email routing binding — allows sending outbound emails
+  "send_email": [
+    {
+      "name": "SEND_EMAIL",
+      "destination_address": "contacto@steresa.cl"
+    }
+  ],
+
+  // Observability — logs enabled, traces disabled
   "observability": {
-    "enabled": true
-  },
-  "assets": {
-    "directory": "."
-  },
-  "compatibility_flags": [
-    "nodejs_compat"
-  ]
+    "enabled": true,
+    "head_sampling_rate": 1,
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "persist": true,
+      "invocation_logs": true
+    },
+    "traces": {
+      "enabled": false,
+      "persist": true,
+      "head_sampling_rate": 1
+    }
+  }
 }
