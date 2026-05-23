@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://steresa.cl/sitemap.xml
