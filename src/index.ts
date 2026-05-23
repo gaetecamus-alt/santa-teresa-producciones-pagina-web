@@ -1,8 +1,21 @@
 import { EmailMessage } from "cloudflare:email";
-import { createMimeMessage } from "mimetext";
 
 interface Env {
   SEND_EMAIL: SendEmail;
+}
+
+function buildRawEmail(from: string, to: string, subject: string, body: string): string {
+  const boundary = `----=_boundary_${Date.now()}`;
+  return [
+    `From: Santa Teresa Producciones <${from}>`,
+    `To: ${to}`,
+    `Subject: ${subject}`,
+    `MIME-Version: 1.0`,
+    `Content-Type: text/plain; charset=UTF-8`,
+    `Content-Transfer-Encoding: 7bit`,
+    ``,
+    body,
+  ].join("\r\n");
 }
 
 export default {
@@ -14,15 +27,19 @@ export default {
 
   // Handle HTTP requests (contact form submissions)
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+    const corsHeaders = {
+      "Access-Control-Allow-Origin": "https://steresa.cl",
+      "Access-Control-Allow-Methods": "POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type",
+    };
+
+    if (request.method === "OPTIONS") {
+      return new Response(null, { headers: corsHeaders });
+    }
+
     if (request.method !== "POST") {
       return new Response("Method not allowed", { status: 405 });
     }
-
-    const corsHeaders = {
-      "Access-Control-Allow-Origin": "https://steresa.cl",
-      "Access-Control-Allow-Methods": "POST",
-      "Access-Control-Allow-Headers": "Content-Type",
-    };
 
     try {
       const body = await request.json<{
@@ -36,37 +53,43 @@ export default {
       const { nombre, email, empresa, tipo, detalle } = body;
 
       if (!nombre || !email || !detalle) {
-        return Response.json({ success: false, message: "Campos requeridos faltantes" }, { status: 400, headers: corsHeaders });
+        return Response.json(
+          { success: false, message: "Campos requeridos faltantes" },
+          { status: 400, headers: corsHeaders }
+        );
       }
 
       console.log(`Contact form submission from=${email} nombre=${nombre}`);
 
-      const msg = createMimeMessage();
-      msg.setSender({ name: "Santa Teresa Producciones", addr: "noreply@steresa.cl" });
-      msg.setRecipient("contacto@steresa.cl");
-      msg.setSubject(`Nueva cotización de ${nombre}`);
-      msg.addMessage({
-        contentType: "text/plain",
-        data: [
-          `Nombre: ${nombre}`,
-          `Email: ${email}`,
-          empresa ? `Empresa: ${empresa}` : null,
-          tipo ? `Tipo de evento: ${tipo}` : null,
-          ``,
-          `Detalle:`,
-          detalle,
-        ]
-          .filter(Boolean)
-          .join("\n"),
-      });
+      const bodyText = [
+        `Nombre: ${nombre}`,
+        `Email: ${email}`,
+        empresa ? `Empresa: ${empresa}` : null,
+        tipo ? `Tipo de evento: ${tipo}` : null,
+        ``,
+        `Detalle:`,
+        detalle,
+      ]
+        .filter(Boolean)
+        .join("\n");
 
-      const emailMessage = new EmailMessage("noreply@steresa.cl", "contacto@steresa.cl", msg.asRaw());
+      const raw = buildRawEmail(
+        "noreply@steresa.cl",
+        "contacto@steresa.cl",
+        `Nueva cotización de ${nombre}`,
+        bodyText
+      );
+
+      const emailMessage = new EmailMessage("noreply@steresa.cl", "contacto@steresa.cl", raw);
       await env.SEND_EMAIL.send(emailMessage);
 
       return Response.json({ success: true }, { headers: corsHeaders });
     } catch (err) {
       console.error("Error sending email:", err);
-      return Response.json({ success: false, message: "Error interno" }, { status: 500, headers: corsHeaders });
+      return Response.json(
+        { success: false, message: "Error interno" },
+        { status: 500, headers: corsHeaders }
+      );
     }
   },
 };
