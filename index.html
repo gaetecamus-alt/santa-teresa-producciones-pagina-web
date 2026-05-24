@@ -417,37 +417,6 @@ nav {
   writing-mode: vertical-lr;
 }
 
-/* ── STATS ── */
-.stats-bar {
-  background: var(--verde);
-  border-top: 1px solid rgba(198,164,92,0.2);
-  border-bottom: 1px solid rgba(198,164,92,0.2);
-}
-
-.stats-inner {
-  display: flex; align-items: stretch;
-  max-width: 1200px; margin: 0 auto;
-}
-
-.stat-item {
-  flex: 1; padding: 36px 40px;
-  display: flex; flex-direction: column; gap: 6px;
-  border-right: 1px solid rgba(198,164,92,0.15);
-}
-
-.stat-item:last-child { border-right: none; }
-
-.stat-num {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 44px; font-weight: 400;
-  color: var(--dorado); line-height: 1;
-}
-
-.stat-label {
-  font-size: 11px; font-weight: 500; letter-spacing: 2px;
-  color: rgba(245,242,235,0.55); text-transform: uppercase;
-}
-
 /* ── SERVICIOS ── */
 section { padding: 100px 8%; }
 
@@ -851,9 +820,7 @@ details[open] .faq-q { color: var(--dorado); }
   .galeria-header { flex-direction: column; gap: 20px; align-items: flex-start; }
   .contacto-grid { grid-template-columns: 1fr; gap: 48px; }
   .form-grid { grid-template-columns: 1fr; }
-  .stats-inner { flex-wrap: wrap; }
-  .stat-item { min-width: 50%; border-right: none; border-bottom: 1px solid rgba(198,164,92,0.15); }
-  footer { flex-direction: column; gap: 16px; text-align: center; }
+footer { flex-direction: column; gap: 16px; text-align: center; }
 }
 </style>
 </head>
@@ -905,28 +872,6 @@ details[open] .faq-q { color: var(--dorado); }
     <span>Scroll</span>
   </div>
 </section>
-
-<!-- STATS -->
-<div class="stats-bar">
-  <div class="stats-inner">
-    <div class="stat-item">
-      <span class="stat-num">+100</span>
-      <span class="stat-label">Eventos realizados</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-num">5+</span>
-      <span class="stat-label">Años de experiencia</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-num">360°</span>
-      <span class="stat-label">Producción integral</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-num">100%</span>
-      <span class="stat-label">Comprometidos</span>
-    </div>
-  </div>
-</div>
 
 <!-- SERVICIOS -->
 <section id="servicios">
