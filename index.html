@@ -456,56 +456,156 @@ section { padding: 100px 8%; }
 
 .servicios-grid {
   display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 2px;
+  gap: 24px;
 }
 
 .servicio-card {
   background: var(--blanco);
-  padding: 40px 32px;
-  border: 1px solid rgba(218,215,207,0.6);
+  padding: 48px 36px 40px;
   position: relative; overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  cursor: default;
+  transition: transform 0.45s cubic-bezier(.2,.7,.2,1), box-shadow 0.45s ease, background 0.45s ease;
+  cursor: pointer;
+  border: 1px solid rgba(218,215,207,0.5);
+  isolation: isolate;
+  display: block;
+  text-decoration: none;
 }
 
+/* Big watermark number in background */
+.servicio-card .servicio-watermark {
+  position: absolute;
+  top: -28px; right: -8px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 180px; font-weight: 300; line-height: 1;
+  color: rgba(198,164,92,0.06);
+  pointer-events: none;
+  transition: color 0.5s ease, transform 0.5s cubic-bezier(.2,.7,.2,1);
+  z-index: 0;
+}
+
+.servicio-card > * { position: relative; z-index: 1; }
+
+/* Top gold line — animates width on hover */
 .servicio-card::before {
   content: '';
-  position: absolute; bottom: 0; left: 0; right: 0;
-  height: 2px; background: var(--dorado);
-  transform: scaleX(0); transform-origin: left;
-  transition: transform 0.35s ease;
+  position: absolute; top: 0; left: 0;
+  height: 2px; width: 36px;
+  background: var(--dorado);
+  transition: width 0.5s cubic-bezier(.2,.7,.2,1);
+  z-index: 2;
 }
 
-.servicio-card:hover::before { transform: scaleX(1); }
+/* Diagonal corner accent */
+.servicio-card::after {
+  content: '';
+  position: absolute; top: 0; right: 0;
+  width: 0; height: 0;
+  border-top: 24px solid transparent;
+  border-right: 24px solid transparent;
+  transition: border-color 0.45s ease;
+  z-index: 2;
+}
+
 .servicio-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(15,45,38,0.08);
+  transform: translateY(-8px);
+  box-shadow: 0 24px 60px rgba(15,45,38,0.12), 0 0 0 1px var(--dorado);
+  background: var(--blanco);
+}
+
+.servicio-card:hover::before { width: 100%; }
+.servicio-card:hover::after {
+  border-top-color: var(--dorado);
+  border-right-color: transparent;
+}
+
+.servicio-card:hover .servicio-watermark {
+  color: rgba(198,164,92,0.14);
+  transform: translate(-6px, 6px) rotate(-3deg);
 }
 
 .servicio-num {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 13px; font-weight: 400; letter-spacing: 2px;
-  color: var(--dorado); margin-bottom: 20px; display: block;
+  font-size: 12px; font-weight: 500; letter-spacing: 3px;
+  color: var(--dorado); margin-bottom: 28px; display: inline-block;
+  position: relative;
 }
+
+.servicio-num::after {
+  content: '';
+  display: inline-block; vertical-align: middle;
+  width: 18px; height: 1px; background: var(--dorado);
+  margin-left: 10px;
+  transition: width 0.4s ease;
+}
+
+.servicio-card:hover .servicio-num::after { width: 36px; }
 
 .servicio-icon {
-  width: 44px; height: 44px;
-  border: 1px solid var(--gris);
+  width: 56px; height: 56px;
+  border: 1px solid rgba(198,164,92,0.4);
+  border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  margin-bottom: 20px;
+  margin-bottom: 28px;
+  background: rgba(245,242,235,0.4);
+  transition: transform 0.5s cubic-bezier(.2,.7,.2,1),
+              background 0.4s ease, border-color 0.4s ease;
 }
 
-.servicio-icon svg { width: 22px; height: 22px; stroke: var(--verde); }
+.servicio-icon svg {
+  width: 26px; height: 26px;
+  stroke: var(--verde);
+  transition: stroke 0.4s ease, transform 0.5s cubic-bezier(.2,.7,.2,1);
+}
+
+.servicio-card:hover .servicio-icon {
+  background: var(--dorado);
+  border-color: var(--dorado);
+  transform: rotate(-8deg) scale(1.08);
+}
+
+.servicio-card:hover .servicio-icon svg {
+  stroke: var(--verde-deep);
+  transform: rotate(8deg);
+}
 
 .servicio-name {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 23px; font-weight: 500; line-height: 1.2;
-  color: var(--verde); margin-bottom: 12px;
+  font-size: 26px; font-weight: 500; line-height: 1.2;
+  color: var(--verde); margin-bottom: 14px;
+  transition: color 0.3s ease;
 }
 
 .servicio-desc {
-  font-size: 14px; font-weight: 300; line-height: 1.8;
+  font-size: 14.5px; font-weight: 300; line-height: 1.85;
   color: #666;
+  margin-bottom: 24px;
+}
+
+.servicio-link {
+  font-size: 11px; font-weight: 600; letter-spacing: 2.5px;
+  text-transform: uppercase; text-decoration: none;
+  color: var(--verde);
+  display: inline-flex; align-items: center; gap: 10px;
+  opacity: 0; transform: translateY(8px);
+  transition: opacity 0.4s ease, transform 0.4s ease, color 0.3s ease, gap 0.3s ease;
+  pointer-events: none;
+}
+
+.servicio-link::after {
+  content: '→';
+  font-size: 16px; font-weight: 400;
+  transition: transform 0.3s ease;
+}
+
+.servicio-card:hover .servicio-link {
+  opacity: 1; transform: translateY(0);
+  color: var(--dorado);
+  pointer-events: auto;
+  gap: 14px;
+}
+
+.servicio-card:hover .servicio-link::after {
+  transform: translateX(4px);
 }
 
 /* ── CARPA ── */
@@ -891,8 +991,9 @@ footer { flex-direction: column; gap: 16px; text-align: center; }
 
   <div class="servicios-grid">
     <!-- 01 -->
-    <div class="servicio-card reveal">
-      <span class="servicio-num">01</span>
+    <a href="#contacto" class="servicio-card reveal">
+      <span class="servicio-watermark">01</span>
+      <span class="servicio-num">Servicio 01</span>
       <div class="servicio-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M3 10h18M3 6h18M7 14h.01M11 14h.01M15 14h.01M7 18h.01M11 18h.01M15 18h.01"/>
@@ -900,11 +1001,13 @@ footer { flex-direction: column; gap: 16px; text-align: center; }
       </div>
       <h3 class="servicio-name">Arriendo de Mobiliario Premium</h3>
       <p class="servicio-desc">Sillas, mesas, living lounge, barras y más. Mobiliario seleccionado para elevar la estética de tu evento.</p>
-    </div>
+      <span class="servicio-link">Consultar</span>
+    </a>
 
     <!-- 02 -->
-    <div class="servicio-card reveal">
-      <span class="servicio-num">02</span>
+    <a href="#carpa" class="servicio-card reveal">
+      <span class="servicio-watermark">02</span>
+      <span class="servicio-num">Servicio 02</span>
       <div class="servicio-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M3 12l9-9 9 9M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9"/>
@@ -912,11 +1015,13 @@ footer { flex-direction: column; gap: 16px; text-align: center; }
       </div>
       <h3 class="servicio-name">Carpas Stretch y Estructuras</h3>
       <p class="servicio-desc">Carpas tensadas de alta gama para exteriores, adaptables a cualquier terreno. Elegancia y protección garantizada.</p>
-    </div>
+      <span class="servicio-link">Consultar</span>
+    </a>
 
     <!-- 03 -->
-    <div class="servicio-card reveal">
-      <span class="servicio-num">03</span>
+    <a href="#contacto" class="servicio-card reveal">
+      <span class="servicio-watermark">03</span>
+      <span class="servicio-num">Servicio 03</span>
       <div class="servicio-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
@@ -924,11 +1029,13 @@ footer { flex-direction: column; gap: 16px; text-align: center; }
       </div>
       <h3 class="servicio-name">Decoración y Ambientación</h3>
       <p class="servicio-desc">Diseño floral, centros de mesa, arcos, instalaciones y styling completo alineado a tu visión.</p>
-    </div>
+      <span class="servicio-link">Consultar</span>
+    </a>
 
     <!-- 04 -->
-    <div class="servicio-card reveal">
-      <span class="servicio-num">04</span>
+    <a href="#contacto" class="servicio-card reveal">
+      <span class="servicio-watermark">04</span>
+      <span class="servicio-num">Servicio 04</span>
       <div class="servicio-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
           <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-4 0v2M8 11h.01M12 11h.01M16 11h.01"/>
@@ -936,11 +1043,13 @@ footer { flex-direction: column; gap: 16px; text-align: center; }
       </div>
       <h3 class="servicio-name">Eventos Corporativos</h3>
       <p class="servicio-desc">Lanzamientos, cenas de gala, team buildings y actividades que fortalecen tu marca y cultura empresarial.</p>
-    </div>
+      <span class="servicio-link">Consultar</span>
+    </a>
 
     <!-- 05 -->
-    <div class="servicio-card reveal">
-      <span class="servicio-num">05</span>
+    <a href="#contacto" class="servicio-card reveal">
+      <span class="servicio-watermark">05</span>
+      <span class="servicio-num">Servicio 05</span>
       <div class="servicio-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
@@ -948,11 +1057,13 @@ footer { flex-direction: column; gap: 16px; text-align: center; }
       </div>
       <h3 class="servicio-name">Matrimonios</h3>
       <p class="servicio-desc">Coordinamos cada detalle de tu día más especial: desde la ceremonia hasta la última pieza musical.</p>
-    </div>
+      <span class="servicio-link">Consultar</span>
+    </a>
 
     <!-- 06 -->
-    <div class="servicio-card reveal">
-      <span class="servicio-num">06</span>
+    <a href="#contacto" class="servicio-card reveal">
+      <span class="servicio-watermark">06</span>
+      <span class="servicio-num">Servicio 06</span>
       <div class="servicio-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="2"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
@@ -960,7 +1071,8 @@ footer { flex-direction: column; gap: 16px; text-align: center; }
       </div>
       <h3 class="servicio-name">Producción Técnica</h3>
       <p class="servicio-desc">Sonido, iluminación, generadores y logística técnica para que todo funcione a la perfección.</p>
-    </div>
+      <span class="servicio-link">Consultar</span>
+    </a>
   </div>
 </section>
 
