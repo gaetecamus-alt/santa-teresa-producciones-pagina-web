@@ -189,9 +189,12 @@
 </script>
 
 <link rel="preload" as="image" href="img/hero.webp" fetchpriority="high">
-<link rel="icon" href="img/favicon.png" type="image/png">
-<link rel="alternate icon" href="img/favicon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="img/favicon.png">
+<!-- Favicon — same icon Google uses in search results.
+     Google requires the favicon URL to be stable and crawlable; PNG must be a multiple of 48px. -->
+<link rel="icon" type="image/png" sizes="480x480" href="img/favicon.png">
+<link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+<link rel="shortcut icon" href="img/favicon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="img/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="dns-prefetch" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
