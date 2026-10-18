@@ -5,10 +5,16 @@
   "compatibility_date": "2025-02-04",
   "compatibility_flags": ["nodejs_compat"],
 
-  // Serve static files (index.html, img/, etc.) from the root directory
+  // Serve static files (index.html, img/, etc.) from the root directory.
+  // - auto-trailing-slash: /matrimonios.html se sirve en /matrimonios
+  // - 404-page: rutas inexistentes devuelven 404.html con status 404
+  // - run_worker_first: el Worker ve todas las requests (redirect www → apex)
   "assets": {
     "directory": ".",
-    "binding": "ASSETS"
+    "binding": "ASSETS",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page",
+    "run_worker_first": true
   },
 
   // Email routing binding — allows sending outbound emails

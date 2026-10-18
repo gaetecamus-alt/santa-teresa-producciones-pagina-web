@@ -3,28 +3,44 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://steresa.cl/</loc>
-    <lastmod>2026-05-23</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>1.0</priority>
-    <image:image>
-      <image:loc>https://steresa.cl/img/hero.webp</image:loc>
-      <image:title>Santa Teresa Producciones — Eventos premium en Buin, Chile</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://steresa.cl/img/exterior.webp</image:loc>
-      <image:title>Carpa Stretch para eventos en exterior</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://steresa.cl/img/flores.webp</image:loc>
-      <image:title>Decoración floral para matrimonios</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://steresa.cl/img/img4063.webp</image:loc>
-      <image:title>Ambientación con iluminación para eventos privados</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://steresa.cl/img/img4015.webp</image:loc>
-      <image:title>Producción integral de eventos</image:title>
-    </image:image>
+    <lastmod>2026-10-18</lastmod>
+    <image:image><image:loc>https://steresa.cl/img/og-image.jpg</image:loc></image:image>
+    <image:image><image:loc>https://steresa.cl/img/carpa-beduina-laguna.webp</image:loc></image:image>
+    <image:image><image:loc>https://steresa.cl/img/hero.webp</image:loc></image:image>
+    <image:image><image:loc>https://steresa.cl/img/flores.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://steresa.cl/arriendo-carpas-eventos</loc>
+    <lastmod>2026-10-18</lastmod>
+    <image:image><image:loc>https://steresa.cl/img/carpa-beduina-exterior.webp</image:loc></image:image>
+    <image:image><image:loc>https://steresa.cl/img/carpa-beduina-laguna.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://steresa.cl/arriendo-mobiliario-eventos</loc>
+    <lastmod>2026-10-18</lastmod>
+    <image:image><image:loc>https://steresa.cl/img/mesa-lenga-sillas-wishbone.webp</image:loc></image:image>
+    <image:image><image:loc>https://steresa.cl/img/lounge-rustico-palmeras.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://steresa.cl/arriendo-equipamiento-gastronomico</loc>
+    <lastmod>2026-10-18</lastmod>
+    <image:image><image:loc>https://steresa.cl/img/horno-pizza-evento.webp</image:loc></image:image>
+    <image:image><image:loc>https://steresa.cl/img/asador-patagonico-inox.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://steresa.cl/banqueteria-catering</loc>
+    <lastmod>2026-10-18</lastmod>
+    <image:image><image:loc>https://steresa.cl/img/flores.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://steresa.cl/matrimonios</loc>
+    <lastmod>2026-10-18</lastmod>
+    <image:image><image:loc>https://steresa.cl/img/hero.webp</image:loc></image:image>
+    <image:image><image:loc>https://steresa.cl/img/img4063.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://steresa.cl/eventos-corporativos</loc>
+    <lastmod>2026-10-18</lastmod>
+    <image:image><image:loc>https://steresa.cl/img/lounge-bajo-carpa.webp</image:loc></image:image>
   </url>
 </urlset>

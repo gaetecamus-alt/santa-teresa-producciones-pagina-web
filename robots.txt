@@ -1,4 +1,17 @@
 User-agent: *
 Allow: /
 
+# Buscadores y asistentes con IA: permitidos explícitamente
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: GPTBot
+User-agent: PerplexityBot
+User-agent: Perplexity-User
+User-agent: ClaudeBot
+User-agent: Claude-SearchBot
+User-agent: Claude-User
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+Allow: /
+
 Sitemap: https://steresa.cl/sitemap.xml

@@ -1,47 +1,59 @@
 # Santa Teresa Producciones — Sitio Web
 
-Sitio web oficial de **Santa Teresa Producciones**, productora de eventos premium ubicada en Buin, Región Metropolitana, Chile.
+Sitio web oficial de **Santa Teresa Producciones**, productora de eventos y empresa de arriendo para eventos con base en Buin, Región Metropolitana, Chile.
 
 ## Descripción
 
-Página institucional de una sola página (single-page) que presenta los servicios de producción integral de eventos: arriendo de mobiliario premium, carpas stretch, decoración, matrimonios, eventos corporativos y producción técnica.
+Sitio estático con una home y una landing por servicio, optimizado para SEO local (Región Metropolitana) y para buscadores con IA (GEO): schema.org, FAQ visibles con su `FAQPage`, `llms.txt` y bots de IA permitidos en `robots.txt`.
 
 ## Estructura del repositorio
 
 ```
 /
-├── index.html          # Sitio web completo (HTML + CSS + JS inline)
-├── img/                # Imágenes del sitio (hero, galería, logos)
-├── sitemap.xml         # Sitemap con imágenes para Google
-├── robots.txt          # Directivas para motores de búsqueda
-├── src/
-│   └── index.ts        # Cloudflare Worker — manejo de emails del formulario
-├── wrangler.jsonc      # Configuración del Worker (Cloudflare)
-├── package.json        # Dependencias del Worker
-└── tsconfig.json       # Configuración TypeScript
+├── index.html                              # Home
+├── arriendo-carpas-eventos.html            # /arriendo-carpas-eventos
+├── arriendo-mobiliario-eventos.html        # /arriendo-mobiliario-eventos
+├── arriendo-equipamiento-gastronomico.html # /arriendo-equipamiento-gastronomico
+├── banqueteria-catering.html               # /banqueteria-catering
+├── matrimonios.html                        # /matrimonios
+├── eventos-corporativos.html               # /eventos-corporativos
+├── 404.html                                # Página de error (status 404)
+├── css/styles.css                          # Estilos compartidos
+├── js/main.js                              # Animaciones y formulario de contacto
+├── img/                                    # Imágenes (.webp publicadas; .jpg/.png originales no se publican)
+├── llms.txt                                # Resumen del negocio para asistentes de IA
+├── sitemap.xml / robots.txt
+├── src/index.ts                            # Cloudflare Worker: redirect www → apex, /api/contact, email
+└── wrangler.jsonc                          # Configuración del Worker y static assets
 ```
+
+Nav, footer y botón de WhatsApp están **duplicados en cada página** (HTML estático, sin build). Si cambias el teléfono, un enlace del menú o el footer, actualízalo en todos los `.html`.
+
+Cada landing tiene su FAQ visible y un `FAQPage` en el `<head>` con **exactamente las mismas preguntas**: si editas una, edita la otra.
 
 ## Tecnologías
 
 - **Frontend:** HTML5, CSS3, JavaScript vanilla — sin frameworks ni dependencias
 - **Tipografías:** Cormorant Garamond + Montserrat (Google Fonts)
-- **Hosting:** Cloudflare Pages
-- **Email:** Cloudflare Workers + Email Routing → `contacto@steresa.cl`
+- **Hosting:** Cloudflare Workers con static assets (cuenta `maldunate0@gmail.com`)
+- **Formulario:** Web3Forms
+- **Email:** Cloudflare Email Routing → `contacto@steresa.cl`
 - **Dominio:** [steresa.cl](https://steresa.cl)
 
 ## Deploy
 
-El sitio se despliega automáticamente en Cloudflare Pages al hacer push a `main`.
+Producción se despliega automáticamente al hacer **push a `main`** en GitHub (build conectado de Cloudflare).
 
-El Worker de email se despliega con:
+Para probar en local con URLs limpias y página 404 reales:
 
 ```bash
 npm install
-npx wrangler deploy
+npx wrangler dev
 ```
 
 ## Contacto
 
+- WhatsApp: +56 9 9552 6920
 - Email: contacto@steresa.cl
 - Instagram: [@santateresaproducciones](https://instagram.com/santateresaproducciones)
 - Ubicación: Buin, Región Metropolitana, Chile

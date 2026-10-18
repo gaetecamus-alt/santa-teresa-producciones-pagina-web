@@ -28,6 +28,13 @@ export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
 
+    // Dominio canónico: www.steresa.cl → steresa.cl (evita contenido duplicado)
+    if (url.hostname === "www.steresa.cl") {
+      url.hostname = "steresa.cl";
+      url.protocol = "https:";
+      return Response.redirect(url.toString(), 301);
+    }
+
     // Only intercept POST /api/contact — everything else served as static asset
     if (url.pathname === "/api/contact") {
       const corsHeaders = {

@@ -10,3 +10,13 @@ src/
 .gitignore
 .assetsignore
 CNAME
+.DS_Store
+.wrangler/
+# Originales de alta resolución: se publican solo las versiones .webp
+img/*.jpg
+!img/og-image.jpg
+img/*.png
+!img/favicon.png
+img/favicon.webp
+img/logo*.webp
+img/letras_logo.webp
