@@ -521,6 +521,8 @@ section { padding: 100px 8%; }
   gap: 80px; align-items: start;
 }
 
+.contacto-grid > *, .form-group { min-width: 0; }
+
 .contacto-info .section-title {
   margin-bottom: 40px;
 }
@@ -586,6 +588,7 @@ section { padding: 100px 8%; }
   font-size: 15px; font-weight: 300;
   outline: none; resize: vertical;
   transition: border-color 0.25s;
+  width: 100%; min-width: 0;
 }
 
 .form-group input:focus,
@@ -968,6 +971,23 @@ details[open] .faq-q { color: var(--dorado); }
 
 .wa-float:hover { transform: translateY(-3px) scale(1.04); box-shadow: 0 14px 36px rgba(0,0,0,0.3); }
 .wa-float svg { width: 30px; height: 30px; fill: currentColor; }
+
+/* Número de teléfono con logo de WhatsApp: ambos llevan al chat */
+.wa-link {
+  display: inline-flex; align-items: center; gap: 0.4em;
+  white-space: nowrap;
+}
+
+.wa-link svg { width: 1.15em; height: 1.15em; fill: #25D366; flex-shrink: 0; }
+
+.faq-a .wa-link {
+  color: var(--verde); font-weight: 500;
+  text-decoration: underline; text-decoration-color: var(--dorado); text-underline-offset: 3px;
+}
+
+.info-icon-wa { text-decoration: none; transition: border-color 0.2s ease, transform 0.2s ease; }
+.info-icon-wa:hover { border-color: #25D366; transform: scale(1.06); }
+.info-icon-wa svg { fill: #25D366; stroke: none; width: 18px; height: 18px; }
 
 /* ── ANIMATIONS ──
    Solo se oculta cuando hay JS (clase .js en <html>), así crawlers y
