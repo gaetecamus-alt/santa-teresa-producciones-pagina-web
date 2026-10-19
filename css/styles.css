@@ -912,6 +912,8 @@ details[open] .faq-q { color: var(--dorado); }
   margin-top: 48px;
 }
 
+.product-grid.two-cols { grid-template-columns: repeat(2, 1fr); }
+
 .product-card { background: var(--blanco); border: 1px solid rgba(218,215,207,0.6); }
 
 .product-card img {
@@ -1021,7 +1023,7 @@ details[open] .faq-q { color: var(--dorado); }
   .cobertura-grid { grid-template-columns: 1fr; gap: 32px; }
   .content-grid { grid-template-columns: 1fr; gap: 40px; }
   .content-grid.reverse > :first-child { order: 0; }
-  .product-grid { grid-template-columns: 1fr; }
+  .product-grid, .product-grid.two-cols { grid-template-columns: 1fr; }
   .page-hero { min-height: 70vh; padding: 120px 6% 56px; }
   .spec-table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
   .spec-table th, .spec-table td { padding: 12px 12px; font-size: 14px; min-width: 120px; }
