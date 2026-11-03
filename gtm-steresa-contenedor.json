@@ -486,7 +486,8 @@
         "firingTriggerId": [
           "2147479553"
         ],
-        "tagFiringOption": "ONCE_PER_EVENT"
+        "tagFiringOption": "ONCE_PER_EVENT",
+        "paused": true
       },
       {
         "accountId": "6402194444",
@@ -516,7 +517,8 @@
             "tagName": "Meta - Pixel base",
             "stopOnSetupFailure": false
           }
-        ]
+        ],
+        "paused": true
       },
       {
         "accountId": "6402194444",
@@ -546,7 +548,8 @@
             "tagName": "Meta - Pixel base",
             "stopOnSetupFailure": false
           }
-        ]
+        ],
+        "paused": true
       },
       {
         "accountId": "6402194444",
@@ -576,7 +579,8 @@
             "tagName": "Meta - Pixel base",
             "stopOnSetupFailure": false
           }
-        ]
+        ],
+        "paused": true
       }
     ],
     "trigger": [
@@ -708,7 +712,7 @@
           {
             "type": "TEMPLATE",
             "key": "value",
-            "value": "AW-PENDIENTE"
+            "value": "AW-18554066755"
           }
         ]
       },
@@ -723,7 +727,7 @@
           {
             "type": "TEMPLATE",
             "key": "value",
-            "value": "PENDIENTE"
+            "value": "18554066755"
           }
         ]
       },
@@ -738,7 +742,7 @@
           {
             "type": "TEMPLATE",
             "key": "value",
-            "value": "PENDIENTE"
+            "value": "ClueCOjZtrEdEMOuoo9F"
           }
         ]
       },
@@ -753,7 +757,7 @@
           {
             "type": "TEMPLATE",
             "key": "value",
-            "value": "PENDIENTE"
+            "value": "l39VCOvZtrEdEMOuoo9F"
           }
         ]
       },
@@ -768,7 +772,7 @@
           {
             "type": "TEMPLATE",
             "key": "value",
-            "value": "PENDIENTE"
+            "value": "KMR7CN7btrEdEMOuoo9F"
           }
         ]
       },

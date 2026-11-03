@@ -37,14 +37,14 @@ Cada landing tiene su FAQ visible y un `FAQPage` en el `<head>` con **exactament
 
 - **Frontend:** HTML5, CSS3, JavaScript vanilla — sin frameworks ni dependencias
 - **Tipografías:** Cormorant Garamond + Montserrat (Google Fonts)
-- **Hosting:** Cloudflare Workers con static assets (cuenta `maldunate0@gmail.com`)
+- **Hosting:** Cloudflare Workers con static assets, desplegado con Workers Builds en la cuenta Cloudflare `8d2a97664032aa14000cbce00af81a60` (conectada a este repo de GitHub)
 - **Formulario:** Web3Forms
 - **Email:** Cloudflare Email Routing → `contacto@steresa.cl`
 - **Dominio:** [steresa.cl](https://steresa.cl)
 
 ## Deploy
 
-Producción se despliega automáticamente al hacer **push a `main`** en GitHub (build conectado de Cloudflare).
+Producción se despliega automáticamente al hacer **push a `main`** en GitHub (Workers Builds). Todo recurso que use el Worker (KV, secrets) debe existir en esa misma cuenta de Cloudflare, o el build falla. El resultado del build aparece como check "Workers Builds" en cada commit.
 
 Para probar en local con URLs limpias y página 404 reales:
 
@@ -70,7 +70,11 @@ Destinos (configurados en GTM): GA4 `G-4YVQMVCEMK` (propiedad 562055813), Google
 
 **Origen del lead:** `main.js` guarda 90 días en el navegador el último origen no directo (`gclid`, `fbclid`, `utm_*`, página de entrada). El formulario lo envía en campos ocultos, así que cada correo de cotización trae origen, campaña, keyword y gclid.
 
-**Código de referencia de WhatsApp:** al tocar WhatsApp, el mensaje termina en `(Ref: XXXX)` y el Worker guarda ese código con su origen en Cloudflare KV (`LEAD_REFS`, 180 días). Cuando un chat termina en venta:
+**Código de referencia de WhatsApp:** al tocar WhatsApp, el mensaje termina en `(Ref: XXXX)` y el Worker guarda ese código con su origen en Cloudflare KV (`LEAD_REFS`, 180 días).
+
+> **Pendiente:** crear el KV y el secret en la cuenta de producción (abajo). Mientras no existan, `/api/lead-ref` responde 503; el código igual aparece en el mensaje y en los correos del formulario.
+
+Cuando un chat termina en venta:
 
 1. Descarga el registro (el token está en `.dev.vars`, que no se sube a git ni al sitio):
    ```bash
@@ -79,10 +83,16 @@ Destinos (configurados en GTM): GA4 `G-4YVQMVCEMK` (propiedad 562055813), Google
 2. Busca el `Ref` del chat y copia su `gclid`.
 3. En Google Ads → Objetivos → Conversiones → Subidas, sube la conversión **Venta cerrada** con ese gclid, la fecha y el valor de la venta.
 
-Configurar el token (una sola vez, o para rotarlo):
+Activar el registro (una vez, con un usuario que tenga acceso a la cuenta de producción):
 
 ```bash
-TOKEN=$(openssl rand -hex 24) && printf 'EXPORT_TOKEN=%s\n' "$TOKEN" > .dev.vars && printf '%s' "$TOKEN" | CLOUDFLARE_ACCOUNT_ID=ca7b572159ffd0bb280bb1a719a468c1 npx wrangler secret put EXPORT_TOKEN
+CLOUDFLARE_ACCOUNT_ID=8d2a97664032aa14000cbce00af81a60 npx wrangler kv namespace create LEAD_REFS
+```
+
+Agregar el `id` que devuelve en `kv_namespaces` de `wrangler.jsonc` (está comentado ahí) y cargar el token:
+
+```bash
+TOKEN=$(openssl rand -hex 24) && printf 'EXPORT_TOKEN=%s\n' "$TOKEN" > .dev.vars && printf '%s' "$TOKEN" | CLOUDFLARE_ACCOUNT_ID=8d2a97664032aa14000cbce00af81a60 npx wrangler secret put EXPORT_TOKEN
 ```
 
 ## Contacto
