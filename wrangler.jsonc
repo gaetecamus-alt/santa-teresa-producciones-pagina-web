@@ -17,14 +17,10 @@
     "run_worker_first": true
   },
 
-  // Códigos de referencia de WhatsApp (Ref: XXXX) con su origen (gclid, utm…), TTL 180 días.
-  // Se escriben en POST /api/lead-ref y se exportan en GET /api/lead-refs.csv (requiere EXPORT_TOKEN).
-  "kv_namespaces": [
-    {
-      "binding": "LEAD_REFS",
-      "id": "01110aa0e38340ec9fededce8356a63b"
-    }
-  ],
+  // Códigos de referencia de WhatsApp (Ref: XXXX): necesitan un KV con binding LEAD_REFS en la
+  // cuenta Cloudflare que despliega producción (8d2a97664032aa14000cbce00af81a60). Mientras no
+  // exista, /api/lead-ref responde 503 y el resto del sitio funciona igual. Al crearlo, agregar:
+  // "kv_namespaces": [{ "binding": "LEAD_REFS", "id": "<id del KV en esa cuenta>" }],
 
   // Email routing binding — allows sending outbound emails
   "send_email": [

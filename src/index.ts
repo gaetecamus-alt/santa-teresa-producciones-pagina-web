@@ -3,7 +3,7 @@ import { EmailMessage } from "cloudflare:email";
 interface Env {
   SEND_EMAIL: SendEmail;
   ASSETS: Fetcher;
-  LEAD_REFS: KVNamespace;
+  LEAD_REFS?: KVNamespace;
   EXPORT_TOKEN?: string;
 }
 
@@ -18,6 +18,7 @@ const LEAD_REF_TTL = 180 * 24 * 60 * 60;
 
 // POST /api/lead-ref — guarda el origen de un clic a WhatsApp. No recibe datos personales.
 async function saveLeadRef(request: Request, url: URL, env: Env): Promise<Response> {
+  if (!env.LEAD_REFS) return new Response("Lead refs not configured", { status: 503 });
   if (request.headers.get("Origin") !== url.origin) {
     return new Response("Forbidden", { status: 403 });
   }
@@ -57,7 +58,8 @@ const csvCell = (v: string) => (/[",\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` 
 
 // GET /api/lead-refs.csv — exporta los refs (Authorization: Bearer <EXPORT_TOKEN>)
 async function exportLeadRefs(request: Request, env: Env): Promise<Response> {
-  if (!env.EXPORT_TOKEN) return new Response("Export not configured", { status: 503 });
+  const kv = env.LEAD_REFS;
+  if (!kv || !env.EXPORT_TOKEN) return new Response("Export not configured", { status: 503 });
   const auth = request.headers.get("Authorization") ?? "";
   const given = auth.startsWith("Bearer ") ? auth.slice(7) : "";
   if (!given || !(await tokenMatches(given, env.EXPORT_TOKEN))) {
@@ -67,12 +69,12 @@ async function exportLeadRefs(request: Request, env: Env): Promise<Response> {
   const keys: string[] = [];
   let cursor: string | undefined;
   do {
-    const page = await env.LEAD_REFS.list({ prefix: "ref:", cursor });
+    const page = await kv.list({ prefix: "ref:", cursor });
     keys.push(...page.keys.map((k) => k.name));
     cursor = page.list_complete ? undefined : page.cursor;
   } while (cursor);
 
-  const records = (await Promise.all(keys.map((k) => env.LEAD_REFS.get<Record<string, string>>(k, "json"))))
+  const records = (await Promise.all(keys.map((k) => kv.get<Record<string, string>>(k, "json"))))
     .filter((r): r is Record<string, string> => r !== null)
     .sort((a, b) => b.ts.localeCompare(a.ts));
 
