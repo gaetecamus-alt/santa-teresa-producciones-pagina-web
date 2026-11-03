@@ -17,6 +17,15 @@
     "run_worker_first": true
   },
 
+  // Códigos de referencia de WhatsApp (Ref: XXXX) con su origen (gclid, utm…), TTL 180 días.
+  // Se escriben en POST /api/lead-ref y se exportan en GET /api/lead-refs.csv (requiere EXPORT_TOKEN).
+  "kv_namespaces": [
+    {
+      "binding": "LEAD_REFS",
+      "id": "01110aa0e38340ec9fededce8356a63b"
+    }
+  ],
+
   // Email routing binding — allows sending outbound emails
   "send_email": [
     {

@@ -3,6 +3,88 @@ import { EmailMessage } from "cloudflare:email";
 interface Env {
   SEND_EMAIL: SendEmail;
   ASSETS: Fetcher;
+  LEAD_REFS: KVNamespace;
+  EXPORT_TOKEN?: string;
+}
+
+// Código de referencia agregado al mensaje de WhatsApp: 4 caracteres sin 0/O/1/I
+const REF_RE = /^[A-HJ-NP-Z2-9]{4}$/;
+const LEAD_REF_FIELDS = [
+  "gclid", "gbraid", "wbraid", "fbclid",
+  "utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content",
+  "landing", "referrer", "page", "link_location",
+] as const;
+const LEAD_REF_TTL = 180 * 24 * 60 * 60;
+
+// POST /api/lead-ref — guarda el origen de un clic a WhatsApp. No recibe datos personales.
+async function saveLeadRef(request: Request, url: URL, env: Env): Promise<Response> {
+  if (request.headers.get("Origin") !== url.origin) {
+    return new Response("Forbidden", { status: 403 });
+  }
+  const raw = await request.text();
+  if (raw.length > 2048) return new Response("Payload too large", { status: 413 });
+
+  let data: Record<string, unknown>;
+  try {
+    data = JSON.parse(raw);
+  } catch {
+    return new Response("Bad request", { status: 400 });
+  }
+  const ref = String(data.ref ?? "");
+  if (!REF_RE.test(ref)) return new Response("Bad request", { status: 400 });
+
+  const record: Record<string, string> = { ts: new Date().toISOString(), ref };
+  for (const field of LEAD_REF_FIELDS) {
+    const value = data[field];
+    if (typeof value === "string" && value) record[field] = value.slice(0, 200);
+  }
+  // Una clave por ref y día: varios clics del mismo visitante no gastan escrituras
+  const day = record.ts.slice(0, 10);
+  await env.LEAD_REFS.put(`ref:${ref}:${day}`, JSON.stringify(record), { expirationTtl: LEAD_REF_TTL });
+  return new Response(null, { status: 204 });
+}
+
+async function tokenMatches(given: string, expected: string): Promise<boolean> {
+  const enc = new TextEncoder();
+  const [a, b] = await Promise.all([
+    crypto.subtle.digest("SHA-256", enc.encode(given)),
+    crypto.subtle.digest("SHA-256", enc.encode(expected)),
+  ]);
+  return crypto.subtle.timingSafeEqual(a, b);
+}
+
+const csvCell = (v: string) => (/[",\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v);
+
+// GET /api/lead-refs.csv — exporta los refs (Authorization: Bearer <EXPORT_TOKEN>)
+async function exportLeadRefs(request: Request, env: Env): Promise<Response> {
+  if (!env.EXPORT_TOKEN) return new Response("Export not configured", { status: 503 });
+  const auth = request.headers.get("Authorization") ?? "";
+  const given = auth.startsWith("Bearer ") ? auth.slice(7) : "";
+  if (!given || !(await tokenMatches(given, env.EXPORT_TOKEN))) {
+    return new Response("Unauthorized", { status: 401, headers: { "WWW-Authenticate": "Bearer" } });
+  }
+
+  const keys: string[] = [];
+  let cursor: string | undefined;
+  do {
+    const page = await env.LEAD_REFS.list({ prefix: "ref:", cursor });
+    keys.push(...page.keys.map((k) => k.name));
+    cursor = page.list_complete ? undefined : page.cursor;
+  } while (cursor);
+
+  const records = (await Promise.all(keys.map((k) => env.LEAD_REFS.get<Record<string, string>>(k, "json"))))
+    .filter((r): r is Record<string, string> => r !== null)
+    .sort((a, b) => b.ts.localeCompare(a.ts));
+
+  const columns = ["ts", "ref", ...LEAD_REF_FIELDS];
+  const lines = [columns.join(","), ...records.map((r) => columns.map((c) => csvCell(r[c] ?? "")).join(","))];
+  return new Response("﻿" + lines.join("\n"), {
+    headers: {
+      "Content-Type": "text/csv; charset=utf-8",
+      "Content-Disposition": 'attachment; filename="lead-refs.csv"',
+      "Cache-Control": "no-store",
+    },
+  });
 }
 
 function buildRawEmail(from: string, to: string, subject: string, body: string): string {
@@ -33,6 +115,16 @@ export default {
       url.hostname = "steresa.cl";
       url.protocol = "https:";
       return Response.redirect(url.toString(), 301);
+    }
+
+    if (url.pathname === "/api/lead-ref") {
+      if (request.method !== "POST") return new Response("Method not allowed", { status: 405 });
+      return saveLeadRef(request, url, env);
+    }
+
+    if (url.pathname === "/api/lead-refs.csv") {
+      if (request.method !== "GET") return new Response("Method not allowed", { status: 405 });
+      return exportLeadRefs(request, env);
     }
 
     // Only intercept POST /api/contact — everything else served as static asset

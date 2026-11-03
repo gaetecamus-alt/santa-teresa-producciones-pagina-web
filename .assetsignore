@@ -11,6 +11,8 @@ src/
 .assetsignore
 CNAME
 .DS_Store
+.dev.vars*
+.env*
 .wrangler/
 # Originales de alta resolución: se publican solo las versiones .webp
 img/*.jpg

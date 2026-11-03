@@ -700,6 +700,9 @@ footer {
   color: rgba(245,242,235,0.35);
 }
 
+.footer-copy a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.footer-copy a:hover { color: var(--dorado); }
+
 /* ── FAQ ── */
 .faq-list { display: flex; flex-direction: column; gap: 2px; }
 
@@ -875,6 +878,9 @@ details[open] .faq-q { color: var(--dorado); }
 }
 
 .check-list strong { font-weight: 500; color: var(--verde); }
+
+.legal a { color: var(--verde); text-decoration: underline; text-decoration-color: var(--dorado); text-underline-offset: 3px; }
+.legal a:hover { color: var(--dorado); }
 
 /* Tabla de especificaciones / capacidades */
 .spec-table {
